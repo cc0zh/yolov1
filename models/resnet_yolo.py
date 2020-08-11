@@ -213,8 +213,8 @@ class ResNet(nn.Module):
         x = self.bn_end(x)
         # x = F.sigmoid(x)  # 归一化到0-1
         x = torch.sigmoid(x)
-        # x = x.view(-1,7,7,30)
-        x = x.permute(0, 2, 3, 1)  # (-1,7,7,30)
+        # x = x.view(-1,14,14,30)
+        x = x.permute(0, 2, 3, 1)  # (-1,14,14,30)
 
         return x
 
