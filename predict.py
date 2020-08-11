@@ -93,20 +93,11 @@ def decoder(pred):
         cls_indexs = torch.zeros(1)
     else:
         boxes = torch.cat(boxes, 0)  # (n,4)
-        # print(type(probs))
-        # print(len(probs))
-        # print(probs)
         probs = torch.cat(probs, 0)  # (n,)
-        # print(probs)
-        # print(type(cls_indexs))
-        # print(len(cls_indexs))
-        # print(cls_indexs)
         cls_indexs = torch.IntTensor(cls_indexs)  # (n,)
     keep = nms(boxes, probs)
-    # print("keep:", keep)
 
     a = boxes[keep]
-
     b = cls_indexs[keep]
     c = probs[keep]
     return a, b, c
@@ -140,8 +131,6 @@ def nms(bboxes,scores,threshold=0.5):
         i = order[0]
         keep.append(i)
 
-
-
         xx1 = x1[order[1:]].clamp(min=x1[i])
         yy1 = y1[order[1:]].clamp(min=y1[i])
         xx2 = x2[order[1:]].clamp(max=x2[i])
@@ -153,19 +142,17 @@ def nms(bboxes,scores,threshold=0.5):
         ovr = inter / (areas[i] + areas[order[1:]] - inter)
         ids = (ovr <= threshold).nonzero().squeeze()
         if ids.numel() == 0:
-            # print("end2")
             break
         order = order[ids+1]
-    # print(keep)
     return torch.LongTensor(keep)
-    # return keep
+
 
 # start predict one image
 def predict_gpu(model, image_name, root_path=''):
     result = []
     image = cv2.imread(root_path+image_name)
     # print(root_path , image_name)
-    h,w,_ = image.shape
+    h, w, _ = image.shape
     img = cv2.resize(image, (448, 448))
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     mean = (123, 117, 104)  # RGB
@@ -186,10 +173,10 @@ def predict_gpu(model, image_name, root_path=''):
         y1 = int(box[1]*h)
         y2 = int(box[3]*h)
         cls_index = cls_indexs[i]
-        cls_index = int(cls_index) # convert LongTensor to int
+        cls_index = int(cls_index)  # convert LongTensor to int
         prob = probs[i]
         prob = float(prob)
-        result.append([(x1,y1),(x2,y2),VOC_CLASSES[cls_index],image_name,prob])
+        result.append([(x1, y1), (x2, y2), VOC_CLASSES[cls_index], image_name, prob])
     return result
 
 
@@ -204,16 +191,16 @@ if __name__ == '__main__':
     print('predicting...')
     result = predict_gpu(model, image_name)
 
-    for left_up,right_bottom,class_name,_,prob in result:
+    for left_up, right_bottom, class_name, _, prob in result:
         color = Color[VOC_CLASSES.index(class_name)]
-        cv2.rectangle(image,left_up,right_bottom,color,2)
-        label = class_name+str(round(prob,2))
+        cv2.rectangle(image, left_up, right_bottom, color, 2)
+        label = class_name+str(round(prob, 2))
         text_size, baseline = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.4, 1)
-        p1 = (left_up[0], left_up[1]- text_size[1])
+        p1 = (left_up[0], left_up[1] - text_size[1])
         cv2.rectangle(image, (p1[0] - 2//2, p1[1] - 2 - baseline), (p1[0] + text_size[0], p1[1] + text_size[1]), color, -1)
-        cv2.putText(image, label, (p1[0], p1[1] + baseline), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (255,255,255), 1, 8)
+        cv2.putText(image, label, (p1[0], p1[1] + baseline), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (255, 255, 255), 1, 8)
 
-    cv2.imwrite('imgs/person_result.jpg',image)
+    cv2.imwrite('imgs/person_result.jpg', image)
 
 
 
