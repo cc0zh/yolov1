@@ -24,6 +24,7 @@ from models.yoloLoss import yoloLoss
 from utils.dataset import yoloDataset
 
 warnings.filterwarnings('ignore')
+
 # 设置GPU ID
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
@@ -46,7 +47,7 @@ train_dataset = yoloDataset(root=file_root, list_file='images.txt', train=True,
                             transform=[transforms.ToTensor()])
 # train_dataset = yoloDataset(root=file_root, list_file=['voc12_trainval.txt','voc07_trainval.txt'],
 #                           train=True,transform = [transforms.ToTensor()] )
-train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=4)
+train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=False, num_workers=4)
 
 test_dataset = yoloDataset(root=file_root, list_file='voc2007test.txt', train=False,
                            transform=[transforms.ToTensor()])
