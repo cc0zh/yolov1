@@ -294,7 +294,7 @@ if __name__ == '__main__':
     #                             train=True, transform=[transforms.ToTensor()])
     train_dataset = yoloDataset(root=file_root, list_file='images.txt',
                                 train=True, transform=[transforms.ToTensor()])
-    train_loader = DataLoader(train_dataset, batch_size=1, shuffle=True, num_workers=0)
+    train_loader = DataLoader(train_dataset, batch_size=1, shuffle=False, num_workers=0)
     train_iter = iter(train_loader)
     for i in range(1):
         img, target = next(train_iter)
