@@ -70,7 +70,7 @@ def voc_ap(rec, prec, use_07_metric=False):
     return ap
 
 
-def voc_eval(preds, target, VOC_CLASSES=VOC_CLASSES, threshold=0.5, use_07_metric=False,):
+def voc_eval(preds, target, VOC_CLASSES=VOC_CLASSES, threshold=0.5, use_07_metric=True,):
     '''
     preds {'cat':[[image_id,confidence,x1,y1,x2,y2],...],'dog':[[],...]}
     target {(image_id,class):[[],]}
@@ -94,7 +94,7 @@ def voc_eval(preds, target, VOC_CLASSES=VOC_CLASSES, threshold=0.5, use_07_metri
         image_ids = [image_ids[x] for x in sorted_ind]
 
         # go down dets and mark TPs and FPs
-        npos = 0.
+        npos = 0.   # 正样本总数
         for (key1, key2) in target:
             if key2 == class_:
                 npos += len(target[(key1,key2)])  # 统计这个类别的正样本，在这里统计才不会遗漏
@@ -135,7 +135,7 @@ def voc_eval(preds, target, VOC_CLASSES=VOC_CLASSES, threshold=0.5, use_07_metri
         rec = tp/float(npos)
         prec = tp/np.maximum(tp + fp, np.finfo(np.float64).eps)
         # print(rec,prec)
-        ap = voc_ap(rec, prec, use_07_metric)
+        ap = voc_ap(rec, prec, use_07_metric=False)
         print('---class {} ap {}---'.format(class_,ap))
         aps += [ap]
     print('---map {}---'.format(np.mean(aps)))
