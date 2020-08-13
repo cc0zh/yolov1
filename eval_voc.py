@@ -135,7 +135,7 @@ def voc_eval(preds, target, VOC_CLASSES=VOC_CLASSES, threshold=0.5, use_07_metri
         rec = tp/float(npos)
         prec = tp/np.maximum(tp + fp, np.finfo(np.float64).eps)
         # print(rec,prec)
-        ap = voc_ap(rec, prec, use_07_metric=False)
+        ap = voc_ap(rec, prec, use_07_metric=True)
         print('---class {} ap {}---'.format(class_,ap))
         aps += [ap]
     print('---map {}---'.format(np.mean(aps)))
