@@ -140,7 +140,7 @@ def nms(bboxes,scores,threshold=0.5):
         h = (yy2-yy1).clamp(min=0)
         inter = w*h
         ovr = inter / (areas[i] + areas[order[1:]] - inter)
-        ids = (ovr <= threshold).nonzero().squeeze()
+        ids = (ovr <= threshold).nonzero().squeeze()    #tensor([0, 1]) 删除掉iou大于阈值的box，ids为iou小于阈值的下标（在order中）
         if ids.numel() == 0:
             break
         order = order[ids+1]
